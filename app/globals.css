@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* Short windows (e.g. a laptop with browser toolbars): tighter spacing so
+   the invitation fits without scrolling. */
+@custom-variant short (@media (max-height: 760px));
+
+/* The values come from config/theme.ts, set on <html> in app/layout.tsx. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --text-base: var(--base-size);
+  --text-base--line-height: var(--base-line-height);
+  --tracking-label: var(--label-tracking);
+}
+
+@layer base {
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    font-weight: var(--label-weight);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Line breaking like typesetting: paragraphs without a short last line,
+     headings balanced. No media query, so it applies on mobile too. */
+  p,
+  li,
+  dd,
+  blockquote,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+
+  /* Keyboard users: without this, links and buttons only show a hover state. */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+}
+
+/* Recurring text roles: all-caps label, body copy and the site's only link
+   style. Labels often serve as section headings (frequently `<p>`), hence
+   `balance` instead of `pretty`. */
+@utility label {
+  @apply text-base uppercase tracking-label;
+  text-wrap: balance;
+}
+
+@utility body-copy {
+  @apply text-base leading-relaxed;
+  /* Lighter than the labels. */
+  font-weight: var(--body-weight);
+}
+
+/* Longer paragraphs justified with a centered last line — a calm edge like
+   print instead of ragged text. Hyphenation points are inserted at build
+   time by `lib/hyphenate.ts` as soft hyphens; `manual` uses only those. */
+@utility text-block {
+  @apply mx-auto max-w-md;
+  text-align: justify;
+  text-align-last: center;
+  hyphens: manual;
+}
+
+/* Hairline instead of a web underline; on hover the line disappears rather
+   than the text getting lighter (no opacity steps). */
+@utility quiet-link {
+  @apply underline decoration-current decoration-1 underline-offset-[0.35em];
+  @apply transition-[text-decoration-color] duration-500;
+  @apply hover:decoration-transparent;
+}
+
+/* Scroll area without a visible scrollbar. */
+@utility page-scroll {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
